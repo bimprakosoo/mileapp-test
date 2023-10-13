@@ -31,7 +31,7 @@ class PackageController extends Controller
   {
     $package = Package::where('transaction_id', $id)->first();
     if (!$package) {
-      return response()->json(['message' => 'Package not found'], 200);
+      return response()->json(['message' => 'Package not found'], 404);
     }
 
     return response()->json(['package' => $package], 200);
