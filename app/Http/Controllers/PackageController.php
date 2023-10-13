@@ -71,6 +71,6 @@ class PackageController extends Controller
     }
     $package->delete();
 
-    return response()->json(["Message" => "Package succesfully deleted"], 200);
+    return response()->json(['message' => 'Package succesfully deleted'], 200);
   }
 }
