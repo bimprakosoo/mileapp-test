@@ -2,45 +2,75 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Package;
+use App\Http\Requests\PatchPackageRequest;
 use App\Http\Requests\StorePackageRequest;
+use App\Models\Package;
+use Illuminate\Http\Request;
 
 class PackageController extends Controller
 {
 
-  public function get($id = null)
+  public function index()
   {
-    try {
-      if ($id) {
-        $package = Package::where('transaction_id', $id)->first();
+    $package = Package::all();
 
-        if (!$package) {
-          return response()->json(['message' => 'Package not found'], 404);
-        }
-
-        return response()->json(['package' => $package]);
-      } else {
-        $package = Package::all();
-
-        return response()->json(['packages' => $package]);
-      }
-    } catch (\Exception $e) {
-      return response()->json(['message' => $e->getMessage()], 400);
-    }
+    return response()->json(['packages' => $package], 200);
   }
 
   public function store(StorePackageRequest $request)
   {
-    try {
-      $data = $request->validated();
-      $package = new Package();
-      $package->fill($data);
-      $package->save();
+    $data = $request->validated();
+    $package = new Package();
+    $package->fill($data);
+    $package->save();
 
-      return response()->json(["Message" => "Package successfully saved"], 201);
-    } catch (\Exception $e) {
-      return response()->json(['messagse' => $e->getMessage()], 400);
+    return response()->json(["Message" => "Package successfully saved"], 201);
+  }
+
+  public function show(string $id)
+  {
+    $package = Package::where('transaction_id', $id)->first();
+    if (!$package) {
+      return response()->json(['message' => 'Package not found'], 200);
     }
+
+    return response()->json(['package' => $package], 200);
+  }
+
+  public function putUpdate(StorePackageRequest $request, string $id)
+  {
+    $data = $request->validated();
+    $package = Package::where('transaction_id', $id)->first();
+    if (!$package) {
+      $data['transaction_id'] = $id;
+      Package::create($data);
+      return response()->json(['message' => 'Package created successfully since no package found'], 201);
+    }
+
+    $package->update($data);
+    return response()->json(['message' => 'Package updated successfully'], 200);
+  }
+
+  public function patchUpdate(PatchPackageRequest $request, string $id)
+  {
+    $data = $request->validated();
+    $package = Package::where('transaction_id', $id)->first();
+    if (!$package) {
+      return response()->json(['message' => 'Package not found'], 404);
+    }
+
+    $package->update($data);
+    return response()->json(['message' => 'Package updated successfully'], 200);
+  }
+
+  public function destroy(string $id)
+  {
+    $package = Package::where('transaction_id', $id)->first();
+    if (!$package) {
+      return response()->json(['message' => 'Package not found'], 404);
+    }
+    $package->delete();
+
+    return response()->json(["Message" => "Package succesfully deleted"], 200);
   }
 }

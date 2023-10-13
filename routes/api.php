@@ -19,7 +19,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
   return $request->user();
 });
 
-Route::group(['prefix' => 'package'], function () {
-  Route::get('/{id?}', [PackageController::class, 'get']);
-  Route::post('/', [PackageController::class, 'store']);
-});
+Route::resource('package', PackageController::class, ['except' => ['update']]);
+Route::patch('package/{id}', [PackageController::class, 'patchUpdate']);
+Route::put('package/{id}', [PackageController::class, 'putUpdate']);
