@@ -16,7 +16,7 @@ DB_PORT=27017
 DB_DATABASE=your_database_name
 DB_USERNAME=your_username
 DB_PASSWORD=your_password</code></pre>
-* Start the server with `php artisan test`
+* Start the server with `php artisan serve`
 * Run the unit tests with `php artisan test`
 
 # Testing the API
